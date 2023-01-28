@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -26,19 +29,14 @@ public class Menu3 {
         Scanner sc = new Scanner(System.in);
         int choice;
         ArrayList<MenuItem> menuItems = new ArrayList<>();
-        menuItems.add(new MenuItem("Americano", 180));
-        menuItems.add(new MenuItem("Cappuccino", 210));
-        menuItems.add(new MenuItem("Espresso", 230));
-        menuItems.add(new MenuItem("Latte", 195));
-        menuItems.add(new MenuItem("Home Made", 10));
+        // Read inventory.txt and create menu items
+        readInventoryFile("inventory.txt", menuItems);
+        int exitOption = menuItems.size() + 1;
 
         displayMenu(menuItems);
 
         // Get choice from user
         choice = sc.nextInt();
-
-        // Exit option
-        int exitOption = menuItems.size() + 1;
 
         // Check choice value
         // while loop, so that loop doesn't end everytime until user presses exit.
@@ -53,5 +51,26 @@ public class Menu3 {
         }
         System.out.println("Good Bye, Visit Again!");
         System.out.println();
+    }
+
+    // Read inventory.txt file...
+
+    private static void readInventoryFile(String fileName, ArrayList<MenuItem> items) {
+        try {
+            FileReader fr = new FileReader(fileName);
+            BufferedReader br = new BufferedReader(fr);
+            String line;
+            while ((line = br.readLine()) != null) {
+
+                // Cappuccino,250
+                String tokens[] = line.split(",");
+                String name = tokens[0];
+                double price = Double.parseDouble(tokens[1]);
+                items.add(new MenuItem(name, price));
+            }
+            br.close();
+        } catch (IOException e) {
+            System.out.println("Error - Cannot read from file " + fileName);
+        }
     }
 }
